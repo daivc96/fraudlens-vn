@@ -11,6 +11,7 @@ help:
 	@echo "  make api-up          Start the projection API on http://localhost:8080"
 	@echo "  make seed            Load synthetic demo indicators into the projection"
 	@echo "  make sync            Pull policy-approved attributes from MISP"
+	@echo "  docker compose exec fraudlens-api python -m fraudlens.intake_cli --help"
 	@echo "  make test            Run JavaScript and Python unit tests"
 
 configure:

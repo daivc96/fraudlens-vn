@@ -77,6 +77,32 @@ Run a policy-approved sync:
 make sync
 ```
 
+## Facebook intake
+
+Search Facebook manually from an analyst account and retain the exact public
+post URL, the reported indicator, scenario, post date, and screenshots. A
+single post is an allegation, not proof. Intake therefore defaults to an
+unpublished MISP event.
+
+```bash
+docker compose exec -T fraudlens-api python -m fraudlens.intake_cli \
+  --type bank-account \
+  --value '<reported-account>' \
+  --bank-code '<bank-code>' \
+  --source-url 'https://www.facebook.com/...' \
+  --scenario 'Mua bán online nhận tiền rồi ngắt liên lạc' \
+  --reviewed-by 'analyst@company.example'
+```
+
+After review, add `--approve-public`. Two independent sources are required by
+default. For an explicitly accepted single-source warning, also pass
+`--single-source-exception`; the record stays `community-reported` with low
+confidence. Then run `make sync` to update the exact-match public projection.
+
+Never put the account holder's name or screenshots into the public response.
+The MISP event keeps the source for analyst review, while lookup returns only a
+masked value and policy-safe summary.
+
 ## Lookup example
 
 ```bash

@@ -36,7 +36,9 @@ make api-up
 MISP remains localhost-only. FraudLens imports only attributes tagged
 `fraudlens:publish=true` into a separate SQLite public projection. See
 [`docs/MISP-INTEGRATION.md`](docs/MISP-INTEGRATION.md) for setup, tag conventions,
-sync, and lookup examples.
+Facebook intake, review rules, sync, and lookup examples. The intake CLI stores
+single-source allegations in MISP staging by default and requires an explicit
+review exception before adding the public-projection tag.
 
 ## Test
 
