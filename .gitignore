@@ -3,3 +3,7 @@ node_modules/
 *.log
 .env*
 !.env.example
+.runtime/
+data/
+__pycache__/
+.pytest_cache/

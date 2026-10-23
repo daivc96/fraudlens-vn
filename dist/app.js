@@ -10,6 +10,7 @@ const reportForm = document.querySelector("#report-form");
 const apiDialog = document.querySelector("#api-dialog");
 const toast = document.querySelector("#toast");
 let activeType = "bank-account";
+const API_BASE = new URLSearchParams(window.location.search).get("api")?.replace(/\/$/, "") || "";
 
 const demos = {
   "bank-account": { value: "0123456789", placeholder: "Nhập số tài khoản cần kiểm tra", inputMode: "numeric" },
@@ -63,7 +64,40 @@ function renderRecord(record) {
 }
 
 function renderEmpty(query) {
-  resultRegion.innerHTML = `<div class="empty-result"><h3>Chưa tìm thấy báo cáo khớp chính xác</h3><p>“${escapeHtml(query)}” chưa có trong bộ dữ liệu demo. Điều này không đồng nghĩa chỉ báo là an toàn.</p></div>`;
+  const dataset = API_BASE ? "projection đã kiểm duyệt" : "bộ dữ liệu demo";
+  resultRegion.innerHTML = `<div class="empty-result"><h3>Chưa tìm thấy báo cáo khớp chính xác</h3><p>“${escapeHtml(query)}” chưa có trong ${dataset}. Điều này không đồng nghĩa chỉ báo là an toàn.</p></div>`;
+}
+
+function mapApiRecord(record) {
+  return {
+    id: `FL-${record.id}`,
+    type: record.indicator_type,
+    bankCode: "",
+    displayValue: record.display_value,
+    riskScore: record.risk_score,
+    reportCount: record.report_count,
+    independentSources: record.independent_sources,
+    firstSeen: record.first_seen,
+    lastSeen: record.last_seen,
+    scamTypes: record.scam_types,
+    summary: record.summary,
+    sources: [{
+      label: "FraudLens public projection",
+      evidence: "Đã qua policy publish từ nguồn TI nội bộ.",
+      date: record.last_seen
+    }]
+  };
+}
+
+async function lookupApi(type, value) {
+  const response = await fetch(`${API_BASE}/v1/indicators/check`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type, value })
+  });
+  if (!response.ok) throw new Error(`Lookup failed (${response.status})`);
+  const payload = await response.json();
+  return payload.matched ? mapApiRecord(payload.indicator) : null;
 }
 
 function showToast(message) {
@@ -75,19 +109,25 @@ function showToast(message) {
 
 tabs.forEach((tab) => tab.addEventListener("click", () => setType(tab.dataset.type)));
 demoValue.addEventListener("click", () => { input.value = demos[activeType].value; input.focus(); });
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const query = input.value.trim();
   if (!query) { input.focus(); showToast("Nhập một giá trị để kiểm tra."); return; }
-  const record = findRecord(activeType, query, DEMO_RECORDS);
-  record ? renderRecord(record) : renderEmpty(query);
+  try {
+    const record = API_BASE
+      ? await lookupApi(activeType, query)
+      : findRecord(activeType, query, DEMO_RECORDS);
+    record ? renderRecord(record) : renderEmpty(query);
+  } catch {
+    showToast("Không kết nối được FraudLens API. Kiểm tra Docker và URL ?api=...");
+  }
 });
 
 document.querySelectorAll("[data-open-report]").forEach((button) => button.addEventListener("click", () => reportDialog.showModal()));
 document.querySelectorAll("[data-open-api]").forEach((button) => button.addEventListener("click", () => apiDialog.showModal()));
 document.querySelectorAll("[data-close-api]").forEach((button) => button.addEventListener("click", () => apiDialog.close()));
 
-reportForm.addEventListener("submit", (event) => {
+reportForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const values = Object.fromEntries(new FormData(reportForm).entries());
   values.hasEvidence = reportForm.elements.hasEvidence.checked;
@@ -97,13 +137,33 @@ reportForm.addEventListener("submit", (event) => {
     errorBox.innerHTML = Object.values(errors).map((error) => `• ${escapeHtml(error)}`).join("<br>");
     return;
   }
-  const reports = JSON.parse(localStorage.getItem("fraudlens-demo-reports") || "[]");
-  reports.push({ ...values, id: crypto.randomUUID(), createdAt: new Date().toISOString(), status: "pending-local" });
-  localStorage.setItem("fraudlens-demo-reports", JSON.stringify(reports));
+  if (API_BASE) {
+    try {
+      const response = await fetch(`${API_BASE}/v1/reports`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: values.type,
+          value: values.value,
+          source_url: values.sourceUrl || null,
+          description: values.description,
+          has_evidence: values.hasEvidence
+        })
+      });
+      if (!response.ok) throw new Error(`Report failed (${response.status})`);
+    } catch {
+      showToast("Không gửi được báo cáo vào API. Dữ liệu chưa được lưu.");
+      return;
+    }
+  } else {
+    const reports = JSON.parse(localStorage.getItem("fraudlens-demo-reports") || "[]");
+    reports.push({ ...values, id: crypto.randomUUID(), createdAt: new Date().toISOString(), status: "pending-local" });
+    localStorage.setItem("fraudlens-demo-reports", JSON.stringify(reports));
+  }
   reportForm.reset();
   errorBox.textContent = "";
   reportDialog.close();
-  showToast("Đã lưu báo cáo demo trên thiết bị này. Chưa gửi dữ liệu ra ngoài.");
+  showToast(API_BASE ? "Đã đưa báo cáo vào hàng đợi analyst." : "Đã lưu báo cáo demo trên thiết bị này. Chưa gửi dữ liệu ra ngoài.");
 });
 
 for (const dialog of [reportDialog, apiDialog]) {
