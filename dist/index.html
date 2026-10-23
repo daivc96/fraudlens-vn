@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Tra cứu nhanh các chỉ báo gian lận đã được cộng đồng báo cáo và analyst kiểm duyệt." />
+    <meta name="theme-color" content="#07110f" />
+    <title>FraudLens VN — Tra cứu tín hiệu gian lận</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <header class="site-header shell">
+      <a class="brand" href="#top" aria-label="FraudLens VN — trang chủ">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>FraudLens <b>VN</b></span>
+      </a>
+      <nav aria-label="Điều hướng chính">
+        <a href="#how">Cách hoạt động</a>
+        <a href="#signals">Tín hiệu mới</a>
+        <button class="link-button" data-open-report>Báo cáo dấu hiệu</button>
+      </nav>
+      <span class="live-pill"><i></i> DEMO LIVE</span>
+    </header>
+
+    <main id="top">
+      <section class="hero shell">
+        <div class="hero-copy">
+          <div class="eyebrow"><span>Public Fraud Intelligence</span><span>•</span><span>Exact-match lookup</span></div>
+          <h1>Kiểm tra trước.<br /><em>Chuyển tiền sau.</em></h1>
+          <p>Tra cứu số tài khoản, số điện thoại và đường link đáng ngờ từ các báo cáo đã được tổng hợp, đối chiếu và chấm điểm rủi ro.</p>
+        </div>
+
+        <div class="lookup-card" aria-labelledby="lookup-title">
+          <div class="card-topline">
+            <span id="lookup-title">TRA CỨU CHỈ BÁO</span>
+            <span class="secure-label">● POLICY-SAFE</span>
+          </div>
+          <div class="tabs" role="tablist" aria-label="Loại chỉ báo">
+            <button class="tab active" data-type="bank-account" role="tab" aria-selected="true">Số tài khoản</button>
+            <button class="tab" data-type="phone-number" role="tab" aria-selected="false">Số điện thoại</button>
+            <button class="tab" data-type="url" role="tab" aria-selected="false">URL / tên miền</button>
+          </div>
+          <form id="lookup-form" novalidate>
+            <label class="sr-only" for="lookup-input">Nhập giá trị cần kiểm tra</label>
+            <div class="search-row">
+              <div class="input-wrap">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+                <input id="lookup-input" autocomplete="off" inputmode="numeric" placeholder="Nhập số tài khoản cần kiểm tra" />
+              </div>
+              <button class="primary-button" type="submit">Kiểm tra <span>↗</span></button>
+            </div>
+            <div class="lookup-meta">
+              <span>Thử demo: <button type="button" id="demo-value">0123456789</button></span>
+              <span>Không lưu lịch sử tìm kiếm</span>
+            </div>
+          </form>
+        </div>
+
+        <div id="result-region" class="result-region" aria-live="polite"></div>
+      </section>
+
+      <section class="metric-strip">
+        <div class="shell metrics">
+          <div><strong>1.284</strong><span>chỉ báo đã chuẩn hóa</span></div>
+          <div><strong>368</strong><span>báo cáo đã đối chiếu</span></div>
+          <div><strong>42</strong><span>kịch bản gian lận</span></div>
+          <div><strong>04</strong><span>nguồn dữ liệu độc lập</span></div>
+        </div>
+      </section>
+
+      <section id="how" class="how shell section-space">
+        <div class="section-heading">
+          <div><span class="kicker">CÓ THỂ GIẢI THÍCH</span><h2>Không chỉ là một blacklist.</h2></div>
+          <p>Mỗi cảnh báo đi kèm bối cảnh, độ tin cậy và dấu vết nguồn. Một báo cáo đơn lẻ không tự động biến thành kết luận.</p>
+        </div>
+        <div class="process-grid">
+          <article><span>01</span><div class="process-icon">⌁</div><h3>Thu thập</h3><p>Bài cảnh báo, báo cáo cộng đồng và nguồn đối tác.</p></article>
+          <article><span>02</span><div class="process-icon">⌗</div><h3>Chuẩn hóa</h3><p>Trích xuất STK, SĐT, URL và liên kết các vụ việc.</p></article>
+          <article><span>03</span><div class="process-icon">✓</div><h3>Đối chiếu</h3><p>Analyst kiểm tra bằng chứng, nguồn độc lập và tranh chấp.</p></article>
+          <article><span>04</span><div class="process-icon">↗</div><h3>Chia sẻ</h3><p>Public lookup, REST API và TAXII cho doanh nghiệp.</p></article>
+        </div>
+      </section>
+
+      <section id="signals" class="signals shell section-space">
+        <div class="section-heading compact">
+          <div><span class="kicker">TÍN HIỆU GẦN ĐÂY</span><h2>Các kịch bản đang được theo dõi.</h2></div>
+          <span class="updated">Cập nhật 23/10/2026</span>
+        </div>
+        <div class="signal-list">
+          <article><div class="signal-rank">01</div><div><h3>Giả shipper · phí hoàn đơn</h3><p>Yêu cầu chuyển khoản phí nhỏ hoặc truy cập link “hoàn tiền”.</p></div><span class="trend up">+28%</span></article>
+          <article><div class="signal-rank">02</div><div><h3>Giả nhân viên ngân hàng</h3><p>Gọi điện cảnh báo giao dịch bất thường, sau đó hỏi OTP.</p></div><span class="trend up">+17%</span></article>
+          <article><div class="signal-rank">03</div><div><h3>Tuyển cộng tác viên online</h3><p>Ứng tiền làm nhiệm vụ và hứa hoàn tiền kèm hoa hồng.</p></div><span class="trend flat">Ổn định</span></article>
+        </div>
+      </section>
+
+      <section class="cta shell">
+        <div><span class="kicker">COMMUNITY SIGNAL</span><h2>Bạn vừa gặp một dấu hiệu đáng ngờ?</h2><p>Gửi nguồn và bằng chứng để đội ngũ có thể kiểm tra. Báo cáo không được công bố tự động.</p></div>
+        <button class="primary-button inverse" data-open-report>Gửi báo cáo <span>↗</span></button>
+      </section>
+    </main>
+
+    <footer class="shell">
+      <div><a class="brand small" href="#top"><span class="brand-mark"><i></i><i></i><i></i></span><span>FraudLens <b>VN</b></span></a><p>Community-powered fraud intelligence.</p></div>
+      <p class="disclaimer">Bản thử nghiệm — dữ liệu hiển thị là dữ liệu giả lập. Kết quả tra cứu chỉ là tín hiệu tham khảo, không phải kết luận pháp lý.</p>
+      <div class="footer-links"><a href="#how">Phương pháp</a><button data-open-api>API</button><button data-open-report>Báo cáo</button></div>
+    </footer>
+
+    <dialog id="report-dialog">
+      <form method="dialog" class="modal-shell" id="report-form">
+        <div class="modal-head"><div><span class="kicker">COMMUNITY INTAKE</span><h2>Gửi dấu hiệu đáng ngờ</h2></div><button class="close-button" value="cancel" aria-label="Đóng">×</button></div>
+        <p class="modal-intro">Bản demo lưu báo cáo trên thiết bị này. Bản production sẽ đưa báo cáo vào hàng đợi analyst.</p>
+        <div class="form-grid">
+          <label>Loại chỉ báo<select name="type"><option value="bank-account">Số tài khoản</option><option value="phone-number">Số điện thoại</option><option value="url">URL / tên miền</option></select></label>
+          <label>Giá trị<input name="value" placeholder="Ví dụ: 0123456789" /></label>
+          <label class="wide">URL nguồn (nếu có)<input name="sourceUrl" type="url" placeholder="https://facebook.com/..." /></label>
+          <label class="wide">Mô tả kịch bản<textarea name="description" rows="4" placeholder="Người liên hệ đã tiếp cận và yêu cầu bạn làm gì?"></textarea></label>
+          <label class="check wide"><input name="hasEvidence" type="checkbox" /> Tôi có screenshot, biên nhận hoặc bằng chứng liên quan.</label>
+        </div>
+        <div id="form-errors" class="form-errors" aria-live="polite"></div>
+        <div class="modal-actions"><button class="secondary-button" value="cancel">Hủy</button><button class="primary-button" type="submit" value="default">Lưu báo cáo demo <span>↗</span></button></div>
+      </form>
+    </dialog>
+
+    <dialog id="api-dialog">
+      <div class="modal-shell api-modal">
+        <div class="modal-head"><div><span class="kicker">INTEGRATION</span><h2>API contract — preview</h2></div><button class="close-button" data-close-api aria-label="Đóng">×</button></div>
+        <p class="modal-intro">Bản production sẽ cung cấp REST lookup và TAXII 2.1 feed sau lớp xác thực doanh nghiệp.</p>
+        <pre><code>POST /v1/indicators/check
+Authorization: Bearer &lt;api-key&gt;
+
+{
+  "type": "bank-account",
+  "bank_code": "ACB",
+  "value": "0123456789"
+}</code></pre>
+        <button class="primary-button" data-close-api>Đã hiểu</button>
+      </div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
